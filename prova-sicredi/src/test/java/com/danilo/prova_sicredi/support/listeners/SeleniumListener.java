@@ -1,8 +1,6 @@
 package com.danilo.prova_sicredi.support.listeners;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.OutputType;
-import org.openqa.selenium.UnhandledAlertException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.events.WebDriverEventListener;
@@ -10,7 +8,6 @@ import org.openqa.selenium.support.events.WebDriverEventListener;
 import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.markuputils.MarkupHelper;
 import com.danilo.prova_sicredi.support.TestContext;
-import com.danilo.prova_sicredi.support.report.ReportHelper;
 
 /**
  * This class handles the log of Selenium events in the ExtentTest instance.
@@ -75,10 +72,6 @@ public class SeleniumListener implements WebDriverEventListener {
 	}
 
 	@Override
-	public <X> void afterGetScreenshotAs(OutputType<X> arg0, X arg1) {
-	}
-
-	@Override
 	public void afterNavigateBack(WebDriver arg0) {
 		report.pass(lastStep);
 		lastStep = null;
@@ -128,22 +121,17 @@ public class SeleniumListener implements WebDriverEventListener {
 
 	@Override
 	public void beforeChangeValueOf(WebElement element, WebDriver driver, CharSequence[] value) {
-		lastStep = "Change value of element with tag <" + element.getTagName() + "> to '" + value.toString() + "'.";
+		lastStep = "Change value of element with tag &lsaquo;" + element.getTagName() + "&rsaquo; to '" + value[0].toString() + "'.";
 	}
 
 	@Override
 	public void beforeClickOn(WebElement element, WebDriver driver) {
-		lastStep = "Click on element with tag <" + element.getTagName() + ">.";
+		lastStep = "Click on element with tag 	&lsaquo;" + element.getTagName() + "&rsaquo;.";
 	}
 
 	@Override
 	public void beforeFindBy(By selector, WebElement element, WebDriver driver) {
-		lastStep = "Find element selected '" + selector.toString() + "'";
-	}
-
-	@Override
-	public <X> void beforeGetScreenshotAs(OutputType<X> arg0) {
-
+		lastStep = "Find element '" + selector.toString() + "'";
 	}
 
 	@Override
@@ -168,7 +156,7 @@ public class SeleniumListener implements WebDriverEventListener {
 
 	@Override
 	public void beforeScript(String script, WebDriver driver) {
-		lastStep = "Inject script.";
+		lastStep = "Inject script:";
 		this.script = script;
 	}
 
@@ -208,28 +196,6 @@ public class SeleniumListener implements WebDriverEventListener {
 		// Add the script as well in case we have it
 		if (script != null)
 			report.fail(MarkupHelper.createCodeBlock(script));
-
-		// Add the error to the report
-		report.fail("Something wrong has happened while running the test.");
-		report.fail(exception);
-
-		/*
-		 * Check if we still have the driver available to take a screenshot. Also, check
-		 * if this is not a blocking exception that would trigger an exception loop
-		 * here.
-		 */
-		if (context.driver != null) {
-
-			// We can't take a screenshot in this case
-			if (exception instanceof UnhandledAlertException) {
-				report.info("Cannot take a screenshot, a alert is blocking it.");
-			} else {
-
-				// Add the screenshot
-				ReportHelper.addScreenshot(context);
-			}
-
-		}
 
 		// Raise the exception as a runtime exception so we don't need to add throws
 		// declaration
