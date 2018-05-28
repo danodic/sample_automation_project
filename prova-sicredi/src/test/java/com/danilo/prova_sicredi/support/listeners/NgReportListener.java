@@ -7,9 +7,11 @@ import org.testng.ITestListener;
 import org.testng.ITestResult;
 import org.testng.annotations.Test;
 
+import com.danilo.prova_sicredi.support.TestClass;
 import com.danilo.prova_sicredi.support.TestContext;
 import com.danilo.prova_sicredi.support.factories.ContextFactory;
 import com.danilo.prova_sicredi.support.report.ParallelReport;
+import com.danilo.prova_sicredi.support.report.ReportHelper;
 
 /**
  * This class handles the automatic reporting for the TestNG invocations.
@@ -28,18 +30,21 @@ public class NgReportListener implements IInvokedMethodListener, ITestListener {
 	@Override
 	public void beforeInvocation(IInvokedMethod method, ITestResult result) {
 		TestContext context;
-		String testName, testDescription;
-		Test annotation;
+		String testName, testDescription, testClassname;
+		Test testAnnotation;
+		TestClass classAnnotation;
 
 		// Get the method annotation
-		annotation = method.getTestMethod().getConstructorOrMethod().getMethod().getAnnotation(Test.class);
+		testAnnotation = method.getTestMethod().getConstructorOrMethod().getMethod().getAnnotation(Test.class);
+		classAnnotation = method.getTestMethod().getConstructorOrMethod().getDeclaringClass().getAnnotation(TestClass.class);
 
 		// Get the properties from the annotation
-		testName = annotation.testName();
-		testDescription = annotation.description();
+		testClassname = classAnnotation.value();
+		testName = testAnnotation.testName();
+		testDescription = testAnnotation.description();
 
 		// Create the context
-		context = ContextFactory.getContext(testName);
+		context = ContextFactory.getContext( testClassname + "#" + testName);
 
 		// Add the first step with the test description
 		// Yeah, that doesn't look really good, but works nicely :)
@@ -65,12 +70,16 @@ public class NgReportListener implements IInvokedMethodListener, ITestListener {
 
 		// Get the context and add information in the report (and finalize Selenium)
 		context = ContextFactory.getContext();
+		takeScreenshot(context, result.getThrowable());
 		context.report.fail("Errors happened during the test execution.");
 		context.report.fail(result.getThrowable());
 		context.finalizeSelenium();
 
 		// Flush the report
 		ParallelReport.flush();
+		
+		// Finalize the context
+		ContextFactory.finalizeContext();
 
 	}
 
@@ -83,12 +92,16 @@ public class NgReportListener implements IInvokedMethodListener, ITestListener {
 
 		// Get the context and add information in the report (and finalize Selenium)
 		context = ContextFactory.getContext();
+		takeScreenshot(context, result.getThrowable());
 		context.report.fail("Errors happened during the test execution.");
 		context.report.fail(result.getThrowable());
 		context.finalizeSelenium();
 
 		// Flush the report
 		ParallelReport.flush();
+		
+		// Finalize the context
+		ContextFactory.finalizeContext();
 	}
 
 	/**
@@ -105,6 +118,9 @@ public class NgReportListener implements IInvokedMethodListener, ITestListener {
 
 		// Flush the report
 		ParallelReport.flush();
+		
+		// Finalize the context
+		ContextFactory.finalizeContext();
 	}
 
 	/**
@@ -120,14 +136,33 @@ public class NgReportListener implements IInvokedMethodListener, ITestListener {
 
 		// Flush the report
 		ParallelReport.flush();
+		
+		// Finalize the context
+		ContextFactory.finalizeContext();
 	}
-	
+
 	/**
 	 * Initialize the report.
 	 */
 	@Override
 	public void onStart(ITestContext arg0) {
 		ParallelReport.initialize();
+	}
+	
+	/**
+	 * Helps taking screenshots in case of errors.
+	 */
+	private void takeScreenshot(TestContext context, Throwable exception) {
+		if (context.driver != null && exception != null) {
+
+			// We can't take a screenshot in this case
+			if (exception.getMessage() !=null && exception.getMessage().contains("UnhandledAlertException")) {
+				context.report.info("Cannot take a screenshot, an alert is blocking it.");
+			} else {
+				// Add the screenshot
+				ReportHelper.addScreenshot(context);
+			}
+		}
 	}
 
 	// Methods below aren't used.
