@@ -54,12 +54,13 @@ public abstract class DriverFactory {
 	 */
 	private static WebDriver getChromeDriver(TestContext context) {
 
+		EventFiringWebDriver eventDriver;
 		WebDriver driver;
 		ChromeOptions options;
 		SeleniumListener listener;
 
 		// Add the property for the chromedriver path
-		System.getProperty("webdriver.chrome.driver",
+		System.setProperty("webdriver.chrome.driver",
 				Settings.getProperty("driver_path") + File.separator + "chromedriver.exe");
 
 		// Setup desired capabilities
@@ -76,13 +77,14 @@ public abstract class DriverFactory {
 		driver = new ChromeDriver();
 
 		// Connect the listener to the driver
-		((EventFiringWebDriver) driver).register(listener);
+		eventDriver = new EventFiringWebDriver(driver);
+		eventDriver.register(listener);
 
 		// Maximize the window
 		driver.manage().window().maximize();
 
 		// Return it
-		return driver;
+		return eventDriver;
 	}
 
 }
