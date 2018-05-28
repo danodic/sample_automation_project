@@ -30,6 +30,9 @@ public class TestContext {
 	// It defines wheter it has or not to handle exceptions in the exception capture
 	// method.
 	private boolean handleExceptions;
+	
+	// Mark if Selenium has been initialized already
+	private boolean seleniumInitialized = false;
 
 	/**
 	 * This is the default constructor. It has to take no parameters so this class
@@ -55,6 +58,9 @@ public class TestContext {
 
 		// Get the report instance
 		report = ParallelReport.getExtentTest(testName);
+		
+		// Handle exceptions is true
+		handleExceptions = true;
 
 	}
 
@@ -65,12 +71,19 @@ public class TestContext {
 	public void initializeSelenium() {
 
 		String browser;
+		
+		// Do not initialize twice
+		if(seleniumInitialized)
+			return;
 
 		// Get the browser name
 		browser = Settings.getProperty("browser");
 
 		// Get the driver
 		driver = DriverFactory.getDriver(this, browser);
+		
+		// Change the flag
+		seleniumInitialized = true;
 
 	}
 
@@ -85,6 +98,7 @@ public class TestContext {
 
 		// Set the driver to null again
 		driver = null;
+		seleniumInitialized = false;
 	}
 
 	/**
