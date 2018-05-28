@@ -5,12 +5,15 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 
 import com.aventstack.extentreports.MediaEntityBuilder;
 import com.aventstack.extentreports.MediaEntityModelProvider;
+import com.danilo.prova_sicredi.support.Settings;
 import com.danilo.prova_sicredi.support.TestContext;
 
 /**
@@ -43,6 +46,14 @@ public abstract class ReportHelper {
 			context.report.info("Could not take screenshot.");
 			return;
 		}
+		
+		// Remove the report folder from the beginning of the path
+		screenshotPath = screenshotPath.replaceAll(Settings.getProperty("report_path"), "");
+		
+		// Remove / from the beginning
+		if(screenshotPath.startsWith(File.separator)) {
+			screenshotPath = screenshotPath.substring(1, screenshotPath.length());
+		}
 
 		// Create the screenshot
 		try {
@@ -54,6 +65,14 @@ public abstract class ReportHelper {
 
 		// Add to the report
 		context.report.info("", screenshot);
+	}
+	
+	/**
+	 * Will bring an element into view and take the screenshot.
+	 */
+	public static void addScreenshot(TestContext context, WebElement element) {
+		showElement(context, element);
+		addScreenshot(context);
 	}
 
 	/**
@@ -78,8 +97,8 @@ public abstract class ReportHelper {
 		threadId = Thread.currentThread().getId();
 
 		// Set the filename and build the path
-		screenshotName = String.format("scr_%l_%d.png", threadId, screenshotCount);
-		screenshotPath = System.getProperty("report_path") + File.separator + "screenshots";
+		screenshotName = String.format("scr_%d_%d.png", threadId, screenshotCount);
+		screenshotPath = Settings.getProperty("report_path") + File.separator + "screenshots";
 		fullPath = screenshotPath + File.separator + screenshotName;
 
 		// Get the bytes from the screenshot
@@ -99,6 +118,30 @@ public abstract class ReportHelper {
 		}
 
 		return fullPath;
+
+	}
+
+	/**
+	 * Bring an element into view.
+	 * 
+	 * @param context
+	 *            Test context containing the driver.
+	 * @param element
+	 *            Element to be displayed.
+	 */
+	public static void showElement(TestContext context, WebElement element) {
+
+		JavascriptExecutor js;
+		String script;
+
+		// Get the driver
+		js = (JavascriptExecutor) context.driver;
+
+		// Setup the script
+		script = "arguments[0].scrollIntoView(true);";
+
+		// Run the script
+		js.executeScript(script, element);
 
 	}
 
