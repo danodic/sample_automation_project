@@ -53,6 +53,9 @@ public abstract class ParallelReport {
 
 	}
 	
+	/**
+	 * Clean the report folder and delete old screenshots.
+	 */
 	private static synchronized void cleanFolders() {
 		
 		String screenshotFolder;
