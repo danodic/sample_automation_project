@@ -58,4 +58,18 @@ public abstract class ContextFactory {
 
 	}
 
+	/**
+	 * Removes the context from the list of instances for the calling thread.
+	 */
+	public static void finalizeContext() {
+		long threadId;
+
+		// Get the thread id
+		threadId = Thread.currentThread().getId();
+		
+		if(instances.containsKey(threadId)){
+			instances.remove(threadId);
+		}
+	}
+	
 }
