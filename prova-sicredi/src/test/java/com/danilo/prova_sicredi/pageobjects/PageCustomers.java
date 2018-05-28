@@ -129,6 +129,9 @@ public class PageCustomers extends PageObject {
 	 *            value to look for.
 	 */
 
+	/**
+	 * Validate that the search results are displayed for the name provided.
+	 */
 	public void validateSearchResultsDisplayed(String value) {
 
 		By selector;
@@ -144,6 +147,9 @@ public class PageCustomers extends PageObject {
 
 	}
 
+	/**
+	 * Click on the 'Action' checkbox for the result with the name provided.
+	 */
 	public void doSelectSearchResult(String name) {
 
 		Calendar cal;
@@ -190,10 +196,17 @@ public class PageCustomers extends PageObject {
 
 	}
 
+	/**
+	 * Will clicl on the button 'Delete' after selecting a search result.
+	 */
 	public void doClickDelete() {
 		driver.findElement(btnDelete).click();
 	}
 
+	/**
+	 * Makes sure the delete modal is displayed and validate the message displayed
+	 * in it.
+	 */
 	public void validateDeletePopupIsDisplayed() {
 		String message;
 
@@ -215,10 +228,16 @@ public class PageCustomers extends PageObject {
 
 	}
 
+	/**
+	 * Click on 'Delete' in the delete confirmation modal.
+	 */
 	public void doConfirmDeleteModal() {
 		driver.findElement(btnDeleteModalDeleteButton).click();
 	}
 
+	/**
+	 * Validates the alert that is displayed after deleting the entry.
+	 */
 	public void validateDeleteConfirmation() {
 		String message;
 
