@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="Grocery Crud">
+  <test thread-count="5" parallel="methods" name="Assessment Tests">
+    <classes>
+      <class name="com.danilo.prova_sicredi.tests.GroceryCrudTest"/>
+    </classes>
+  </test> <!-- Test -->
+</suite> <!-- Suite -->
