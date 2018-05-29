@@ -28,7 +28,7 @@ Autor: Danilo Guimaraes
       * Esta class também faz o override de configurações através de linha de comando, utilizando argumentos de VM (ex.: -Dframework.browser="chrome")
   * O diretório report tem um relatório de exemplo, que será sobrescrito por novas execuções.
   * Classes do pacote support devem estar todas documentadas com comentários e javadoc.
-  * Desenvolvido utilizando Eclipse Oxygen e testado com Maven 3.5.3.
+  * Testado com Maven 3.5.3, JDK 1.8.0_161 e Chrome 66.
     * Testado com goals de compile e test:
       * `mvn compile test`
     * Vídeo da execução de teste: https://www.youtube.com/watch?v=6zA5PtoYX9w
