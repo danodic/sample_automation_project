@@ -29,4 +29,6 @@ Autor: Danilo Guimaraes
   * O diretório report tem um relatório de exemplo, que será sobrescrito por novas execuções.
   * Classes do pacote support devem estar todas documentadas com comentários e javadoc.
   * Desenvolvido utilizando Eclipse Oxygen e testado com Maven 3.5.3.
+    * Testado com goals de compile e test:
+      * `mvn compile test`
     * Vídeo da execução de teste: https://www.youtube.com/watch?v=6zA5PtoYX9w
