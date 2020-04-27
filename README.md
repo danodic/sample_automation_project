@@ -1,4 +1,4 @@
-# Prova Sicredi
+# Projeto de Exemplo de Automação
 Autor: Danilo Guimaraes
 
 ### Notas:
